@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multitool Hub - Deine persönliche Tool-Sammlung</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a1f3a 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--surface-light);
+            border: none;
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(99, 102, 241, 0.3);
+            border-color: var(--primary);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--background);
+            border: 2px solid var(--surface-light);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #7c3aed;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(34, 211, 238, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .game-canvas {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            background: var(--background);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            color: var(--accent);
+        }
+
+        .tutorial-step {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .tutorial-step h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--surface-light);
+        }
+
+        .code-block code {
+            color: var(--accent);
+            font-family: 'Courier New', monospace;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--surface);
+            border-radius: 12px;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .nav {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: var(--surface-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: all 0.3s;
+            border-radius: 2px;
+        }
+
+        .color-preview {
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border: 2px solid var(--surface-light);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🛠️ Multitool Hub</div>
+            <nav class="nav">
+                <button class="nav-btn active" onclick="showSection('home')">Home</button>
+                <button class="nav-btn" onclick="showSection('rechner')">Rechner</button>
+                <button class="nav-btn" onclick="showSection('tools')">Tools</button>
+                <button class="nav-btn" onclick="showSection('spiele')">Spiele</button>
+                <button class="nav-btn" onclick="showSection('tutorials')">Tutorials</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- HOME SECTION -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h1>Willkommen im Multitool Hub</h1>
+                <p>Deine zentrale Anlaufstelle für nützliche Rechner, praktische Tools, unterhaltsame Spiele und hilfreiche Tutorials</p>
+            </div>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🧮</div>
+                    <h3>Rechner</h3>
+                    <p>BMI, Währung, Prozent und mehr</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Tools</h3>
+                    <p>Passwort-Generator, Farbwähler, QR-Code</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Spiele</h3>
+                    <p>Snake, Memory und mehr</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <h3>Tutorials</h3>
+                    <p>HTML, CSS, JavaScript lernen</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- RECHNER SECTION -->
+        <section id="rechner" class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">Rechner</h2>
+            <div class="grid">
+                <!-- BMI Rechner -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">⚖️</span> BMI Rechner</h3>
+                    <div class="input-group">
+                        <label>Gewicht (kg)</label>
+                        <input type="number" id="weight" placeholder="z.B. 70">
+                    </div>
+                    <div class="input-group">
+                        <label>Größe (cm)</label>
+                        <input type="number" id="height" placeholder="z.B. 175">
+                    </div>
+                    <button class="btn" onclick="calculateBMI()">BMI berechnen</button>
+                    <div id="bmi-result" class="result"></div>
+                </div>
+
+                <!-- Währungsrechner -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">💱</span> Währungsrechner</h3>
+                    <div class="input-group">
+                        <label>Betrag (EUR)</label>
+                        <input type="number" id="eur-amount" placeholder="z.B. 100" value="100">
+                    </div>
+                    <div class="input-group">
+                        <label>Zu</label>
+                        <select id="currency">
+                            <option value="1.09">USD (1.09)</option>
+                            <option value="0.83">GBP (0.83)</option>
+                            <option value="166.34">JPY (166.34)</option>
+                            <option value="1.46">CAD (1.46)</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="convertCurrency()">Umrechnen</button>
+                    <div id="currency-result" class="result"></div>
+                </div>
+
+                <!-- Prozentrechner -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">📊</span> Prozentrechner</h3>
+                    <div class="input-group">
+                        <label>Grundwert</label>
+                        <input type="number" id="base-value" placeholder="z.B. 200">
+                    </div>
+                    <div class="input-group">
+                        <label>Prozentsatz (%)</label>
+                        <input type="number" id="percentage" placeholder="z.B. 20">
+                    </div>
+                    <button class="btn" onclick="calculatePercentage()">Berechnen</button>
+                    <div id="percentage-result" class="result"></div>
+                </div>
+
+                <!-- Zeitrechner -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">⏰</span> Zeitrechner</h3>
+                    <div class="input-group">
+                        <label>Stunden</label>
+                        <input type="number" id="hours" placeholder="z.B. 2" value="2">
+                    </div>
+                    <div class="input-group">
+                        <label>Minuten</label>
+                        <input type="number" id="minutes" placeholder="z.B. 30" value="30">
+                    </div>
+                    <button class="btn" onclick="convertTime()">In Minuten umrechnen</button>
+                    <div id="time-result" class="result"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOLS SECTION -->
+        <section id="tools" class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">Tools</h2>
+            <div class="grid">
+                <!-- Passwort Generator -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🔐</span> Passwort Generator</h3>
+                    <div class="input-group">
+                        <label>Länge</label>
+                        <input type="number" id="pwd-length" min="8" max="32" value="16">
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="pwd-upper" checked> Großbuchstaben
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="pwd-numbers" checked> Zahlen
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="pwd-symbols" checked> Symbole
+                        </label>
+                    </div>
+                    <button class="btn" onclick="generatePassword()">Generieren</button>
+                    <div id="password-result" class="result"></div>
+                    <div class="password-strength">
+                        <div id="password-strength-bar" class="password-strength-bar"></div>
+                    </div>
+                </div>
+
+                <!-- Farbwähler -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🎨</span> Farbwähler</h3>
+                    <div class="input-group">
+                        <label>Farbe wählen</label>
+                        <input type="color" id="color-picker" value="#6366f1">
+                    </div>
+                    <div id="color-preview" class="color-preview"></div>
+                    <div id="color-codes" class="result show" style="display: block;"></div>
+                    <button class="btn" onclick="copyColorCode()">HEX Code kopieren</button>
+                </div>
+
+                <!-- Text zu Sprache -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🗣️</span> Text zu Sprache</h3>
+                    <div class="input-group">
+                        <label>Text eingeben</label>
+                        <textarea id="tts-text" rows="4" placeholder="Gib einen Text ein...">Hallo! Willkommen im Multitool Hub.</textarea>
+                    </div>
+                    <button class="btn" onclick="speakText()">Vorlesen</button>
+                    <button class="btn btn-secondary" onclick="stopSpeaking()">Stop</button>
+                </div>
+
+                <!-- Countdown Timer -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">⏲️</span> Countdown Timer</h3>
+                    <div class="input-group">
+                        <label>Minuten</label>
+                        <input type="number" id="timer-minutes" value="5" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Sekunden</label>
+                        <input type="number" id="timer-seconds" value="0" min="0" max="59">
+                    </div>
+                    <div class="score" id="timer-display">05:00</div>
+                    <button class="btn" onclick="startTimer()">Start</button>
+                    <button class="btn btn-secondary" onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPIELE SECTION -->
+        <section id="spiele" class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">Spiele</h2>
+            <div class="grid">
+                <!-- Snake Spiel -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🐍</span> Snake</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-dim);">Steuere die Schlange mit den Pfeiltasten</p>
+                    <canvas id="snake-canvas" class="game-canvas" width="400" height="400"></canvas>
+                    <div class="score">Punkte: <span id="snake-score">0</span></div>
+                    <button class="btn" onclick="startSnake()">Neues Spiel</button>
+                </div>
+
+                <!-- Zahlenraten -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🎯</span> Zahlenraten</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-dim);">Rate die Zahl zwischen 1 und 100</p>
+                    <div class="input-group">
+                        <label>Deine Vermutung</label>
+                        <input type="number" id="guess-input" min="1" max="100" placeholder="1-100">
+                    </div>
+                    <div class="score">Versuche: <span id="guess-attempts">0</span></div>
+                    <div id="guess-hint" class="result"></div>
+                    <button class="btn" onclick="makeGuess()">Raten</button>
+                    <button class="btn btn-secondary" onclick="newGuessingGame()">Neues Spiel</button>
+                </div>
+
+                <!-- Memory -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">🃏</span> Memory</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-dim);">Finde die Paare!</p>
+                    <div id="memory-board" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin: 1rem 0;"></div>
+                    <div class="score">Züge: <span id="memory-moves">0</span></div>
+                    <button class="btn" onclick="startMemory()">Neues Spiel</button>
+                </div>
+
+                <!-- Reaktionstest -->
+                <div class="card">
+                    <h3 class="card-title"><span class="card-icon">⚡</span> Reaktionstest</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-dim);">Klicke wenn die Box grün wird!</p>
+                    <div id="reaction-box" style="width: 100%; height: 200px; background: var(--surface-light); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin: 1rem 0;" onclick="reactionClick()">
+                        Klicke zum Starten
+                    </div>
+                    <div class="score" id="reaction-time">Reaktionszeit: - ms</div>
+                    <button class="btn" onclick="startReaction()">Neuer Versuch</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TUTORIALS SECTION -->
+        <section id="tutorials" class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem; font-size: 2.5rem;">Tutorials</h2>
+            
+            <div class="card" style="max-width: 900px; margin: 0 auto 2rem;">
+                <h3 class="card-title"><span class="card-icon">📘</span> HTML Grundlagen</h3>
+                
+                <div class="tutorial-step">
+                    <h3>1. Was ist HTML?</h3>
+                    <p>HTML (HyperText Markup Language) ist die Auszeichnungssprache für Webseiten. Sie definiert die Struktur und den Inhalt einer Webseite.</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>2. Grundstruktur</h3>
+                    <p>Jede HTML-Seite hat diese Grundstruktur:</p>
+                    <div class="code-block">
+                        <code>&lt;!DOCTYPE html&gt;<br>
+&lt;html&gt;<br>
+&nbsp;&nbsp;&lt;head&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Meine Webseite&lt;/title&gt;<br>
+&nbsp;&nbsp;&lt;/head&gt;<br>
+&nbsp;&nbsp;&lt;body&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Willkommen!&lt;/h1&gt;<br>
+&nbsp;&nbsp;&lt;/body&gt;<br>
+&lt;/html&gt;</code>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>3. Wichtige Tags</h3>
+                    <p><strong>&lt;h1&gt; bis &lt;h6&gt;</strong> - Überschriften<br>
+                    <strong>&lt;p&gt;</strong> - Absatz<br>
+                    <strong>&lt;a href="..."&gt;</strong> - Link<br>
+                    <strong>&lt;img src="..."&gt;</strong> - Bild<br>
+                    <strong>&lt;div&gt;</strong> - Container</p>
+                </div>
+            </div>
+
+            <div class="card" style="max-width: 900px; margin: 0 auto 2rem;">
+                <h3 class="card-title"><span class="card-icon">🎨</span> CSS Grundlagen</h3>
+                
+                <div class="tutorial-step">
+                    <h3>1. Was ist CSS?</h3>
+                    <p>CSS (Cascading Style Sheets) bestimmt das Aussehen deiner Webseite - Farben, Größen, Abstände und Layout.</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>2. CSS einbinden</h3>
+                    <div class="code-block">
+                        <code>&lt;style&gt;<br>
+&nbsp;&nbsp;h1 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;color: blue;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;font-size: 32px;<br>
+&nbsp;&nbsp;}<br>
+&lt;/style&gt;</code>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>3. Wichtige Eigenschaften</h3>
+                    <p><strong>color</strong> - Textfarbe<br>
+                    <strong>background</strong> - Hintergrundfarbe<br>
+                    <strong>padding</strong> - Innenabstand<br>
+                    <strong>margin</strong> - Außenabstand<br>
+                    <strong>border</strong> - Rahmen</p>
+                </div>
+            </div>
+
+            <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <h3 class="card-title"><span class="card-icon">⚙️</span> JavaScript Grundlagen</h3>
+                
+                <div class="tutorial-step">
+                    <h3>1. Was ist JavaScript?</h3>
+                    <p>JavaScript macht deine Webseite interaktiv. Du kannst auf Klicks reagieren, Inhalte ändern und Berechnungen durchführen.</p>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>2. Variablen</h3>
+                    <div class="code-block">
+                        <code>let name = "Max";<br>
+const alter = 25;<br>
+let summe = 10 + 5;</code>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>3. Funktionen</h3>
+                    <div class="code-block">
+                        <code>function grüßen(name) {<br>
+&nbsp;&nbsp;alert("Hallo " + name + "!");<br>
+}<br><br>
+grüßen("Anna");</code>
+                    </div>
+                </div>
+
+                <div class="tutorial-step">
+                    <h3>4. DOM Manipulation</h3>
+                    <div class="code-block">
+                        <code>// Element auswählen<br>
+let element = document.getElementById("meinElement");<br><br>
+// Inhalt ändern<br>
+element.textContent = "Neuer Text";<br><br>
+// Klick-Event<br>
+element.onclick = function() {<br>
+&nbsp;&nbsp;alert("Geklickt!");<br>
+};</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // BMI Rechner
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value) / 100;
+            
+            if (!weight || !height) {
+                alert('Bitte fülle beide Felder aus!');
+                return;
+            }
+            
+            const bmi = (weight / (height * height)).toFixed(1);
+            let category = '';
+            
+            if (bmi < 18.5) category = 'Untergewicht';
+            else if (bmi < 25) category = 'Normalgewicht';
+            else if (bmi < 30) category = 'Übergewicht';
+            else category = 'Adipositas';
+            
+            const result = document.getElementById('bmi-result');
+            result.innerHTML = `<strong>Dein BMI:</strong> ${bmi}<br><strong>Kategorie:</strong> ${category}`;
+            result.classList.add('show');
+        }
+
+        // Währungsrechner
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('eur-amount').value);
+            const rate = parseFloat(document.getElementById('currency').value);
+            
+            if (!amount) {
+                alert('Bitte gib einen Betrag ein!');
+                return;
+            }
+            
+            const converted = (amount * rate).toFixed(2);
+            const result = document.getElementById('currency-result');
+            result.innerHTML = `<strong>${amount} EUR =</strong> ${converted} ${document.getElementById('currency').selectedOptions[0].text.split(' ')[0]}`;
+            result.classList.add('show');
+        }
+
+        // Prozentrechner
+        function calculatePercentage() {
+            const base = parseFloat(document.getElementById('base-value').value);
+            const percent = parseFloat(document.getElementById('percentage').value);
+            
+            if (!base || !percent) {
+                alert('Bitte fülle beide Felder aus!');
+                return;
+            }
+            
+            const value = (base * percent / 100).toFixed(2);
+            const result = document.getElementById('percentage-result');
+            result.innerHTML = `<strong>${percent}% von ${base} =</strong> ${value}`;
+            result.classList.add('show');
+        }
+
+        // Zeitrechner
+        function convertTime() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            
+            const totalMinutes = hours * 60 + minutes;
+            const result = document.getElementById('time-result');
+            result.innerHTML = `<strong>Gesamt:</strong> ${totalMinutes} Minuten<br><strong>Das sind:</strong> ${(totalMinutes / 60).toFixed(2)} Stunden`;
+            result.classList.add('show');
+        }
+
+        // Passwort Generator
+        function generatePassword() {
+            const length = parseInt(document.getElementById('pwd-length').value);
+            const useUpper = document.getElementById('pwd-upper').checked;
+            const useNumbers = document.getElementById('pwd-numbers').checked;
+            const useSymbols = document.getElementById('pwd-symbols').checked;
+            
+            let chars = 'abcdefghijklmnopqrstuvwxyz';
+            if (useUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (useNumbers) chars += '0123456789';
+            if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            const result = document.getElementById('password-result');
+            result.innerHTML = `<strong>Passwort:</strong> <span style="font-family: monospace; font-size: 1.1rem;">${password}</span>`;
+            result.classList.add('show');
+            
+            // Stärke anzeigen
+            const strengthBar = document.getElementById('password-strength-bar');
+            let strength = 0;
+            if (length >= 12) strength += 25;
+            if (useUpper) strength += 25;
+            if (useNumbers) strength += 25;
+            if (useSymbols) strength += 25;
+            
+            strengthBar.style.width = strength + '%';
+            if (strength < 50) strengthBar.style.background = 'var(--danger)';
+            else if (strength < 75) strengthBar.style.background = 'var(--warning)';
+            else strengthBar.style.background = 'var(--success)';
+        }
+
+        // Farbwähler
+        const colorPicker = document.getElementById('color-picker');
+        const colorPreview = document.getElementById('color-preview');
+        const colorCodes = document.getElementById('color-codes');
+
+        function updateColor() {
+            const color = colorPicker.value;
+            colorPreview.style.background = color;
+            
+            // HEX zu RGB
+            const r = parseInt(color.substr(1,2), 16);
+            const g = parseInt(color.substr(3,2), 16);
+            const b = parseInt(color.substr(5,2), 16);
+            
+            colorCodes.innerHTML = `
+                <strong>HEX:</strong> ${color}<br>
+                <strong>RGB:</strong> rgb(${r}, ${g}, ${b})<br>
+                <strong>HSL:</strong> ${rgbToHsl(r, g, b)}
+            `;
+        }
+
+        colorPicker.addEventListener('input', updateColor);
+        updateColor();
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+            
+            return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+        }
+
+        function copyColorCode() {
+            const color = colorPicker.value;
+            navigator.clipboard.writeText(color);
+            alert('HEX Code kopiert: ' + color);
+        }
+
+        // Text zu Sprache
+        let speech = null;
+        function speakText() {
+            const text = document.getElementById('tts-text').value;
+            if ('speechSynthesis' in window) {
+                speech = new SpeechSynthesisUtterance(text);
+                speech.lang = 'de-DE';
+                window.speechSynthesis.speak(speech);
+            } else {
+                alert('Dein Browser unterstützt keine Sprachausgabe!');
+            }
+        }
+
+        function stopSpeaking() {
+            window.speechSynthesis.cancel();
+        }
+
+        // Countdown Timer
+        let timerInterval = null;
+        let timerSeconds = 0;
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+            timerSeconds = minutes * 60 + seconds;
+            
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert('⏰ Timer abgelaufen!');
+                    return;
+                }
+                timerSeconds--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            const minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('timer-seconds').value) || 0;
+            timerSeconds = minutes * 60 + seconds;
+            updateTimerDisplay();
+        }
+
+        // Snake Spiel
+        let snake, food, dx, dy, score, gameLoop;
+        const canvas = document.getElementById('snake-canvas');
+        const ctx = canvas.getContext('2d');
+        const gridSize = 20;
+
+        function startSnake() {
+            snake = [{x: 200, y: 200}];
+            food = {x: 0, y: 0};
+            dx = gridSize;
+            dy = 0;
+            score = 0;
+            placeFood();
+            
+            if (gameLoop) clearInterval(gameLoop);
+            gameLoop = setInterval(updateSnake, 100);
+            
+            document.getElementById('snake-score').textContent = score;
+        }
+
+        function placeFood() {
+            food.x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+            food.y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+        }
+
+        function updateSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            
+            // Kollision mit Wand
+            if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+                clearInterval(gameLoop);
+                alert('Game Over! Punkte: ' + score);
+                return;
+            }
+            
+            // Kollision mit sich selbst
+            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                clearInterval(gameLoop);
+                alert('Game Over! Punkte: ' + score);
+                return;
+            }
+            
+            snake.unshift(head);
+            
+            // Essen
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                document.getElementById('snake-score').textContent = score;
+                placeFood();
+            } else {
+                snake.pop();
+            }
+            
+            drawSnake();
+        }
+
+        function drawSnake() {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Schlange
+            ctx.fillStyle = '#6366f1';
+            snake.forEach((segment, index) => {
+                ctx.fillRect(segment.x, segment.y, gridSize - 2, gridSize - 2);
+                if (index === 0) {
+                    ctx.fillStyle = '#22d3ee';
+                    ctx.fillRect(segment.x, segment.y, gridSize - 2, gridSize - 2);
+                    ctx.fillStyle = '#6366f1';
+                }
+            });
+            
+            // Essen
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(food.x, food.y, gridSize - 2, gridSize - 2);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -gridSize; }
+            if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = gridSize; }
+            if (e.key === 'ArrowLeft' && dx === 0) { dx = -gridSize; dy = 0; }
+            if (e.key === 'ArrowRight' && dx === 0) { dx = gridSize; dy = 0; }
+        });
+
+        // Zahlenraten
+        let targetNumber = 0;
+        let attempts = 0;
+
+        function newGuessingGame() {
+            targetNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('guess-attempts').textContent = attempts;
+            document.getElementById('guess-hint').classList.remove('show');
+            document.getElementById('guess-input').value = '';
+        }
+
+        function makeGuess() {
+            const guess = parseInt(document.getElementById('guess-input').value);
+            if (!guess || guess < 1 || guess > 100) {
+                alert('Bitte gib eine Zahl zwischen 1 und 100 ein!');
+                return;
+            }
+            
+            attempts++;
+            document.getElementById('guess-attempts').textContent = attempts;
+            
+            const hint = document.getElementById('guess-hint');
+            if (guess === targetNumber) {
+                hint.innerHTML = `🎉 <strong>Richtig!</strong> Du hast die Zahl in ${attempts} Versuchen erraten!`;
+                hint.style.borderColor = 'var(--success)';
+            } else if (guess < targetNumber) {
+                hint.innerHTML = '📈 Zu niedrig! Versuch es höher.';
+                hint.style.borderColor = 'var(--warning)';
+            } else {
+                hint.innerHTML = '📉 Zu hoch! Versuch es niedriger.';
+                hint.style.borderColor = 'var(--warning)';
+            }
+            hint.classList.add('show');
+        }
+
+        newGuessingGame();
+
+        // Memory Spiel
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+
+        function startMemory() {
+            const symbols = ['🎮', '🎨', '🎯', '🎪', '🎭', '🎸', '🎬', '🎤'];
+            memoryCards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matchedPairs = 0;
+            moves = 0;
+            document.getElementById('memory-moves').textContent = moves;
+            
+            const board = document.getElementById('memory-board');
+            board.innerHTML = '';
+            
+            memoryCards.forEach((symbol, index) => {
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: var(--surface-light);
+                    aspect-ratio: 1;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                `;
+                card.dataset.index = index;
+                card.dataset.symbol = symbol;
+                card.textContent = '❓';
+                card.onclick = () => flipCard(card);
+                board.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length === 2 || card.dataset.flipped === 'true') return;
+            
+            card.textContent = card.dataset.symbol;
+            card.style.background = 'var(--primary)';
+            card.dataset.flipped = 'true';
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('memory-moves').textContent = moves;
+                
+                setTimeout(() => {
+                    if (flippedCards[0].dataset.symbol === flippedCards[1].dataset.symbol) {
+                        flippedCards.forEach(c => {
+                            c.style.background = 'var(--success)';
+                            c.style.opacity = '0.6';
+                        });
+                        matchedPairs++;
+                        if (matchedPairs === 8) {
+                            setTimeout(() => alert(`🎉 Gewonnen in ${moves} Zügen!`), 500);
+                        }
+                    } else {
+                        flippedCards.forEach(c => {
+                            c.textContent = '❓';
+                            c.style.background = 'var(--surface-light)';
+                            c.dataset.flipped = 'false';
+                        });
+                    }
+                    flippedCards = [];
+                }, 800);
+            }
+        }
+
+        startMemory();
+
+        // Reaktionstest
+        let reactionStart = 0;
+        let reactionWaiting = false;
+        let reactionTimeout = null;
+
+        function startReaction() {
+            const box = document.getElementById('reaction-box');
+            box.style.background = 'var(--surface-light)';
+            box.textContent = 'Warte...';
+            reactionWaiting = true;
+            
+            const delay = Math.random() * 3000 + 2000;
+            reactionTimeout = setTimeout(() => {
+                box.style.background = 'var(--success)';
+                box.textContent = 'KLICK!';
+                reactionStart = Date.now();
+            }, delay);
+        }
+
+        function reactionClick() {
+            const box = document.getElementById('reaction-box');
+            
+            if (!reactionWaiting) {
+                startReaction();
+                return;
+            }
+            
+            if (reactionStart === 0) {
+                clearTimeout(reactionTimeout);
+                box.style.background = 'var(--danger)';
+                box.textContent = 'Zu früh! Klicke zum erneuten Starten';
+                reactionWaiting = false;
+                return;
+            }
+            
+            const reactionTime = Date.now() - reactionStart;
+            document.getElementById('reaction-time').textContent = `Reaktionszeit: ${reactionTime} ms`;
+            box.style.background = 'var(--surface-light)';
+            box.textContent = 'Klicke zum erneuten Starten';
+            reactionStart = 0;
+            reactionWaiting = false;
+        }
+    </script>
+</body>
+</html>
